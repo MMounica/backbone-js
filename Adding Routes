@@ -1,0 +1,19 @@
+  Adding Routes
+Backbone.js supports the push state operations. In other words, you may manipulate the current browser's URL and travel between pages. However, we'll stick with the good old hash type URLs, for example /#edit/3.
+
+
+// App.js
+var Router = Backbone.Router.extend({
+    routes: {
+        "archive": "archive",
+        "new": "newToDo",
+        "edit/:index": "editToDo",
+        "delete/:index": "delteToDo",
+        "": "list"
+    },
+    list: function(archive) {},
+    archive: function() {},
+    newToDo: function() {},
+    editToDo: function(index) {},
+    delteToDo: function(index) {}
+});
