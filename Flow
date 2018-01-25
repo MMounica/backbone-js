@@ -1,0 +1,7 @@
+Flow
+The entry point of the app is App.js and its init method. This is what we will call in the onload handler of the window object.
+
+
+window.onload = function() {
+    app.init();
+}
