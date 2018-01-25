@@ -1,0 +1,45 @@
+Setup
+Here is the file structure which we'll use:
+
+css
+    +-- styles.css
+js
+    +-- collections
+        +-- ToDos.js
+    +-- models
+        +-- ToDo.js
+    +-- vendor
+       +-- backbone.js
+       +-- jquery-1.10.2.min.js
+       +-- underscore.js
+    +-- views
+    +-- App.js
+ +-- index.html
+
+
+Flow
+The entry point of the app is App.js and its init method. This is what we will call in the onload handler of the window object.
+
+
+window.onload = function() {
+    app.init();
+}
+Showing Our First View (Main Navigation)
+The first thing which we have to show, is the main application's navigation.
+
+
+// views/menu.js
+app.views.menu = Backbone.View.extend({
+    template: _.template($("#tpl-menu").html()),
+    initialize: function() {
+        this.render();
+    },
+    render: function(){
+        this.$el.html(this.template({}));
+    }
+});
+It's only nine lines of code, but lots of cool things are happening here. The first one is setting a template. If you remember, we added Underscore.js to our app? We are going to use its templating engine, because it works good and it is simple enough to use.
+
+1
+_.template(templateString, [data], [settings])
+
