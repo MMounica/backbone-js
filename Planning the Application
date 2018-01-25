@@ -1,0 +1,36 @@
+Planning the Application
+It's always good to have a plan before we start working on something. Backbone.js doesn't have a super strict architecture, which we have to follow. That's one of the benefits of the framework. So, before we start with the implementation of the business logic, let's talk about the basis.
+
+Namespacing
+A good practice is to put your code into its own scope. Registering global variables or functions is not a good idea. What we will create is one model, one collection, a router and few Backbone.js views. All these elements should live in a private space. App.js will contain the class which holds everything.
+
+
+// App.js
+var app = (function() {
+ 
+    var api = {
+        views: {},
+        models: {},
+        collections: {},
+        content: null,
+        router: null,
+        todos: null,
+        init: function() {
+            this.content = $("#content");
+        },
+        changeContent: function(el) {
+            this.content.empty().append(el);
+            return this;
+        },
+        title: function(str) {
+            $("h1").text(str);
+            return this;
+        }
+    };
+    var ViewsFactory = {};
+    var Router = Backbone.Router.extend({});
+    api.router = new Router();
+ 
+    return api;
+ 
+})();
