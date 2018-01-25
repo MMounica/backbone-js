@@ -1,0 +1,12 @@
+Managing the Data
+The most important thing in our small project is the data. Our tasks are what we should manage, so let's start from there. Here is our model definition.
+
+
+// models/ToDo.js
+app.models.ToDo = Backbone.Model.extend({
+    defaults: {
+        title: "ToDo",
+        archived: false,
+        done: false
+    }
+});
