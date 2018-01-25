@@ -1,0 +1,124 @@
+In Backbone.js the event's definition is a just a hash. You firstly type the name of the event and then a selector. The values of the properties are actually methods of the view.
+
+
+// views/list.js
+priorityUp: function(e) {
+    var index = parseInt(e.target.parentNode.parentNode.getAttribute("data-index"));
+    this.model.up(index);
+},
+priorityDown: function(e) {
+    var index = parseInt(e.target.parentNode.parentNode.getAttribute("data-index"));
+    this.model.down(index);
+},
+archive: function(e) {
+    var index = parseInt(e.target.parentNode.parentNode.getAttribute("data-index"));
+    this.model.archive(this.mode !== "archive", index); 
+},
+changeStatus: function(e) {
+    var index = parseInt(e.target.parentNode.parentNode.getAttribute("data-index"));
+    this.model.changeStatus(e.target.checked, index);       
+}
+Here we are using e.target coming in to the handler. It points to the DOM element which triggered the event. We are getting the index of the clicked ToDo and updating the model in the collection. With these four functions we finished our class and now the data is shown to the page.
+
+As we mentioned above, we will use the same view for the Archive page.
+
+
+list: function(archive) {
+    var view = ViewsFactory.list();
+    api
+    .title(archive ? "Archive:" : "Your ToDos:")
+    .changeContent(view.$el);
+    view.setMode(archive ? "archive" : null).render();
+},
+archive: function() {
+    this.list(true);
+}
+Above is the same route handler as before, but this time with true as a parameter.
+
+Adding & Editing ToDos
+Following the primer of the list view, we could create another one which shows a form for adding and editing tasks. Here is how this new class is created:
+
+
+// App.js / views factory
+form: function() {
+    if(!this.formView) {
+        this.formView = new api.views.form({
+            model: api.todos
+        }).on("saved", function() {
+            api.router.navigate("", {trigger: true});
+        })
+    }
+    return this.formView;
+}
+Pretty much the same. However, this time we need to do something once the form is submitted. And that's forward the user to the home page. As I said, every object which extends Backbone.js classes, is actually an event dispatcher. There are methods like on and trigger which you can use.
+
+Before we continue with the view code, let's take a look at the HTML template:
+
+
+<script type="text/template" id="tpl-form">
+    <form>
+        <textarea><%= title %></textarea>
+        <button>save</button>
+    </form>
+</script>
+We have a textarea and a button. The template expects a title parameter which should be an empty string, if we are adding a new task.
+
+
+// views/form.js
+app.views.form = Backbone.View.extend({
+    index: false,
+    events: {
+        'click button': 'save'
+    },
+    initialize: function() {
+        this.render();
+    },
+    render: function(index) {
+        var template, html = $("#tpl-form").html();
+        if(typeof index == 'undefined') {
+            this.index = false;
+            template = _.template(html, { title: ""});
+        } else {
+            this.index = parseInt(index);
+            this.todoForEditing = this.model.at(this.index);
+            template = _.template($("#tpl-form").html(), {
+                title: this.todoForEditing.get("title")
+            });
+        }
+        this.$el.html(template);
+        this.$el.find("textarea").focus();
+        this.delegateEvents();
+        return this;
+    },
+    save: function(e) {
+        e.preventDefault();
+        var title = this.$el.find("textarea").val();
+        if(title == "") {
+            alert("Empty textarea!"); return;
+        }
+        if(this.index !== false) {
+            this.todoForEditing.set("title", title);
+        } else {
+            this.model.add({ title: title });
+        }   
+        this.trigger("saved");      
+    }
+});
+The view is just 40 lines of code, but it does its job well. There is only one event attached and this is the clicking of the save button. The render method acts differently depending of the passed index parameter. For example, if we are editing a ToDo, we pass the index and fetch the exact model. If not, then the form is empty and a new task will be created. There are several interesting points in the code above. First, in the rendering we used the .focus() method to bring the focus to the form once the view is rendered. Again the delegateEvents function should be called, because the form could be detached and attached again. The save method starts with e.preventDefault(). This removes the default behavior of the button, which in some cases may be submitting the form. And at the end, once everything is done we triggered the saved event notifying the outside world that the ToDo is saved into the collection.
+
+There are two methods for the router which we have to fill in.
+
+
+// App.js
+newToDo: function() {
+    var view = ViewsFactory.form();
+    api.title("Create new ToDo:").changeContent(view.$el);
+    view.render()
+},
+editToDo: function(index) {
+    var view = ViewsFactory.form();
+    api.title("Edit:").changeContent(view.$el);
+    view.render(index);
+}
+The difference between them is that we pass in an index, if the edit/:index route is matched. And of course the title of the page is changed accordingly.
+
