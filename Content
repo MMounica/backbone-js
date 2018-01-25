@@ -1,0 +1,27 @@
+There are few things which are obvious, like /css/styles.css and /index.html. They contain the CSS styles and the HTML markup. In the context of Backbone.js, the model is a place where we keep our data. So, our ToDos will simply be models. And because we will have more than one task, we will organize them into a collection. The business logic is distributed between the views and the main application's file, App.js. Backbone.js has only one hard dependency - Underscore.js. The framework also plays very well with jQuery, so they both go to the vendor directory. All we need now is just a little HTML markup and we are ready to go.
+
+<!doctype html>
+<html>
+  <head>
+        <title>My TODOs</title>
+        <link rel="stylesheet" type="text/css" href="css/styles.css" />
+    </head>
+    <body>
+        <div class="container">
+            <div id="menu" class="menu cf"></div>
+            <h1></h1>
+            <div id="content"></div>
+        </div>
+        <script src="js/vendor/jquery-1.10.2.min.js"></script>
+        <script src="js/vendor/underscore.js"></script>
+        <script src="js/vendor/backbone.js"></script>
+        <script src="js/App.js"></script>
+        <script src="js/models/ToDo.js"></script>
+        <script src="js/collections/ToDos.js"></script>
+        <script>
+            window.onload = function() {
+                // bootstrap
+            }
+        </script>
+    </body>
+</html>
