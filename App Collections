@@ -1,0 +1,12 @@
+The initialize method is the entry point of the collection. In our case, we added a few tasks by default. Of course in the real world, the information will come from a database or somewhere else. But to keep you focused, we will do that manually. The other thing which is typical for collections, is setting the model property. It tells the class what kind of data is being stored. The rest of the methods implement custom logic, related to the features in our application. up and down functions change the order of the ToDos. To simplify things, we will identify every ToDo with just an index in the collection's array. This means that if we want to fetch one specific record, we should point to its index. So, the ordering is just switching the elements in an array. As you may guess from the code above, this.models is the array which we are talking about. archive and changeStatus set properties of the given element. We put these methods here, because the views will have access to the ToDos collection and not to the tasks directly.
+
+Additionally, we don't need to create any models from the app.models.ToDo class, but we do need to create an instance from the app.collections.ToDos collection.
+
+
+
+// App.js
+init: function() {
+    this.content = $("#content");
+    this.todos = new api.collections.ToDos();
+    return this;
+}
